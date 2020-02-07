@@ -13,16 +13,6 @@ jobs:
           POSTGRES_PASSWORD: ""
     steps:
       - checkout
-      - run: mkdir test-reports
-      - run:
-          name: Download Selenium
-          command: |
-            curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
-      - run:
-          name: Start Selenium
-          command: |
-            java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
-          background: true
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
       - run:
@@ -44,3 +34,10 @@ jobs:
           destination: tr1
       - store_test_results:
           path: test-reports/
+  deploy:
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$2c4e4c33-a589-4c39-9374-5c912c2b4182@git.heroku.com/$python-flask-101.git master
